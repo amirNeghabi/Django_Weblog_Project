@@ -1,0 +1,187 @@
+{% extends '_base.html' %}
+{% block page_title %}
+    لیست پست‌ها
+{% endblock page_title %}
+
+{% block content %}
+    <!-- حذف دکمه از container و قرار دادن آن در موقعیت جدید -->
+    <button id="theme-toggle" class="btn btn-toggle">🌙 حالت تاریک</button>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-9">
+                {% for post in posts_list %}
+                    <div class="card shadow-lg border-0 rounded-3 overflow-hidden my-4 hover-effect theme-card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold theme-text">{{ post.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted small py-2 theme-text">By: {{ post.author }}</h6>
+                            <p class="card-text py-3 theme-text">
+                                {{ post.text }}
+                            </p>
+                            <a href="{% url 'post_detail' post.id %}" class="btn btn-theme btn-sm">Read More &rarr;</a>
+
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-lg rounded-3 my-4 animate-fade-in theme-card">
+                    <h5 class="card-header theme-header">خواندن بیشتر</h5>
+                    <div class="card-body text-center">
+                        <p class="card-text theme-text">We love Python and Django. So we created a blog site to share our thoughts.</p>
+                        <a href="#" class="btn btn-theme-danger btn-sm">More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;700&display=swap');
+
+        body {
+            background-color: #ffffff;
+            color: #333;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-card {
+            background: #f8f9fa;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .theme-text {
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .theme-header {
+            background: linear-gradient(45deg, #007bff, #6610f2);
+            color: white;
+        }
+
+        .btn-theme {
+            background: linear-gradient(45deg, #007bff, #6610f2);
+            color: white;
+            border: none;
+            transition: background 0.3s;
+        }
+
+        .btn-theme:hover {
+            background: linear-gradient(45deg, #6610f2, #007bff);
+        }
+
+        .btn-theme-danger {
+            background: linear-gradient(45deg, #dc3545, #ff073a);
+            color: white;
+            border: none;
+        }
+
+        .btn-theme-danger:hover {
+            background: linear-gradient(45deg, #ff073a, #dc3545);
+        }
+
+        /* تغییر استایل دکمه تغییر تم */
+        .btn-toggle {
+            position: absolute;
+            top: 70px; /* فاصله از بالا - زیر نوبار */
+            left: 20px;
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .btn-toggle:hover {
+            background: #0056b3;
+        }
+
+        /* حالت تاریک */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .theme-card {
+            background: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #333;
+        }
+
+        .dark-mode .theme-text {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .theme-header {
+            background: linear-gradient(45deg, #1e90ff, #3a0ca3);
+        }
+
+        .dark-mode .btn-theme {
+            background: linear-gradient(45deg, #3a0ca3, #1e90ff);
+        }
+
+        .dark-mode .btn-theme:hover {
+            background: linear-gradient(45deg, #1e90ff, #3a0ca3);
+        }
+
+        .dark-mode .btn-theme-danger {
+            background: linear-gradient(45deg, #b30021, #ff073a);
+        }
+
+        .dark-mode .btn-theme-danger:hover {
+            background: linear-gradient(45deg, #ff073a, #b30021);
+        }
+
+        .dark-mode .btn-toggle {
+            background: #ff073a;
+        }
+
+        .dark-mode .btn-toggle:hover {
+            background: #b30021;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const themeToggle = document.getElementById("theme-toggle");
+            const body = document.body;
+
+            if (localStorage.getItem("darkMode") === "enabled") {
+                body.classList.add("dark-mode");
+                themeToggle.textContent = "☀️ حالت روشن";
+            }
+
+            themeToggle.addEventListener("click", function () {
+                body.classList.toggle("dark-mode");
+                if (body.classList.contains("dark-mode")) {
+                    localStorage.setItem("darkMode", "enabled");
+                    themeToggle.textContent = "☀️ حالت روشن";
+                } else {
+                    localStorage.setItem("darkMode", "disabled");
+                    themeToggle.textContent = "🌙 حالت تاریک";
+                }
+            });
+        });
+    </script>
+{% endblock content %}
+
+
+
