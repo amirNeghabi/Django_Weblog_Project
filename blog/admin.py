@@ -10,4 +10,4 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('user','post','text','datetime_created',)
+    list_display = ('user','post','text','datetime_created','recommend','is_activate')

@@ -30,6 +30,8 @@ class Comment(models.Model):
     text = models.TextField()
     datetime_created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(get_user_model(),on_delete = models.CASCADE)
+    is_activate = models.BooleanField(default=True)
+    recommend = models.BooleanField(default=True)
 
     # در این اسم پستی  که براش کاکمنت گذاشته شده نوشته می شود
     # پس این سطر کامنت های جدول Bookاست
