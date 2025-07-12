@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect
-from .models import Post
+from django.template.defaulttags import comment
+
+from .models import Post,Comment
 # مربوط ب راه اول مدیریت خطا
 from django.core.exceptions import ObjectDoesNotExist
 # راه دوم مدیریت خطا
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 # استفاده ااز متد فرم در دریافت اطلاعات از کاربر
-from .forms import NewPostForm
+from .forms import NewPostForm,CommentForm
 # استفاده از کلاس بیس ویو
 from django.views import generic
 # بعد از حذف پست کاربر را به صفحه دیگیری ریدایرکت کن
@@ -129,10 +131,31 @@ class PostListView(generic.ListView):
         return Post.objects.filter(status='pub').order_by('-datetime_modified')
 
     # ساخت کلاس برای صفحه جزییات هر پست
-class PostDetailView(generic.DetailView):
-    model = Post
-    template_name = "blog/post_detail.html"
-    context_object_name = "post"
+# class PostDetailView(generic.DetailView):
+#     model = Post
+#     template_name = "blog/post_detail.html"
+#     context_object_name = "post"
+def post_detail(request,pk):
+    post = get_object_or_404(Post,pk=pk)
+    post_comments = post.comments.all()
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.post = post
+            new_comment.user = request.user
+            new_comment.save()
+            comment_form = CommentForm()
+    else:
+        comment_form = CommentForm()
+    return render(request,"blog/post_detail.html",{"post":post,
+        "comments":post_comments,
+        "comment_form":comment_form,
+        })
+
+
+
+
 
 # ساخت کلاس برای صفحه ساخت پست
 class PostCreateView(generic.CreateView):

@@ -30,6 +30,10 @@ class Comment(models.Model):
     text = models.TextField()
     datetime_created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(get_user_model(),on_delete = models.CASCADE)
+
+    # در این اسم پستی  که براش کاکمنت گذاشته شده نوشته می شود
+    # پس این سطر کامنت های جدول Bookاست
+
     post = models.ForeignKey(Post,on_delete = models.CASCADE,related_name='comments')
 
     def __str__(self):
