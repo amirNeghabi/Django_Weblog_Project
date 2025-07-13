@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load crispy_forms_tags %}
 
 {% block page_title %}
     اضافه کردن پست جدید
@@ -14,13 +15,14 @@
                 <h3>Add new Post:</h3>
                 <form method="POST">
                     {% csrf_token %}
+                    {{ form|crispy }}
 {#                    ----------------------1#}
 
 {#                    {{ form.as_p }}#}
 {#                    -----------2------#}
-                    <table>
-                        {{ form.as_table }}
-                    </table>
+{#                    <table>#}
+{#                        {{ form.as_table }}#}
+{#                    </table>#}
 {#                    --------------3------------#}
 {#                        {{ form.as_ul }}#}
                 {#                    متغییر formدر کانتکس رو در صفحه نمایش بده#}
