@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.template.defaulttags import comment
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from .models import Post,Comment
 # مربوط ب راه اول مدیریت خطا
 from django.core.exceptions import ObjectDoesNotExist
@@ -135,6 +136,8 @@ class PostListView(generic.ListView):
 #     model = Post
 #     template_name = "blog/post_detail.html"
 #     context_object_name = "post"
+
+@login_required
 def post_detail(request,pk):
     post = get_object_or_404(Post,pk=pk)
     post_comments = post.comments.all()
@@ -153,25 +156,21 @@ def post_detail(request,pk):
         "comment_form":comment_form,
         })
 
-
-
-
-
 # ساخت کلاس برای صفحه ساخت پست
-class PostCreateView(generic.CreateView):
+class PostCreateView(LoginRequiredMixin,generic.CreateView):
     # ازکدام فرم در این کلاس استفاده کردی؟
     form_class = NewPostForm
     template_name = "blog/post_create.html"
 
 # ساخت فرم برای اپدیت پست ها
-class PostUpdateView(generic.UpdateView):
+class PostUpdateView(LoginRequiredMixin,generic.UpdateView):
     # نوع مئل را باید معیین کنیم تا جنگو بهش کوِییری بزند
     model = Post
     form_class = NewPostForm
     template_name = "blog/post_create.html"
 
 # ساخت کلای برای حذف پست
-class PostDeleteView(generic.DeleteView):
+class PostDeleteView(LoginRequiredMixin,generic.DeleteView):
     model = Post
     template_name = "blog/post_delete.html"
 #     بعد از ساخت کلاس و با کمی تاخیر برو و آدرس صفحه نمایش پست را پیدا کن
