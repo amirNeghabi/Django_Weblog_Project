@@ -1,104 +1,52 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block page_title %} {% endblock page_title %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <title>{% block page_title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet">
     <style>
         body {
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .navbar {
-            background-color: #007bff;
-            padding: 10px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        /* کادر خوش‌آمدگویی */
-        .welcome-box {
-            background-color: rgba(173, 216, 230, 0.3);
-            border-left: 5px solid #007bff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* استایل برای نام کاربری و دکمه logout */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info span {
-            color: white;
-            font-weight: bold;
-        }
-
-        .user-info .btn-logout {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .user-info .btn-logout:hover {
-            background-color: #c82333;
+            font-family: 'Vazir', sans-serif;
         }
     </style>
 </head>
-<body>
-<nav class="navbar">
-    <div class="container-fluid d-flex align-items-center">
-        <!-- آیتم‌های سمت چپ نوبار -->
-        <div class="d-flex align-items-center me-auto">
-            <a href="{% url 'post_list' %}">صفحه اصلی</a>
-            <a href="/blog">بلاگ</a>
-            <a href="{% url 'post_create' %}">ساخت پست جدید</a>
-        </div>
 
-        <!-- بخش کاربری (سمت راست نوبار) -->
-        <div class="user-info">
+<body class="bg-gray-900 text-gray-100">
+<header class="bg-gray-800 py-4">
+    <nav class="container mx-auto flex justify-between items-center px-4">
+        <a href="{% url 'post_list' %}" class="text-2xl font-bold text-indigo-400 hover:text-indigo-300">وبلاگ من</a>
+        <ul class="flex space-x-6 space-x-reverse">
+            <li><a href="{% url 'post_list' %}" class="hover:text-indigo-400 transition duration-300">صفحه اصلی</a></li>
+            <li><a href="{% url 'post_list' %}" class="hover:text-indigo-400 transition duration-300">بلاگ</a></li>
             {% if user.is_authenticated %}
-                <span>{{ user.username }}</span>
-                <form action="{% url 'logout' %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-logout">Log Out</button>
-                </form>
+                <li><a href="{% url 'post_create' %}" class="hover:text-indigo-400 transition duration-300">ساخت پست
+                    جدید</a></li>
+                <li><a href="#" class="hover:text-indigo-400 transition duration-300">{{ user.username }}</a></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="hover:text-indigo-400 transition duration-300">خروج</button>
+                    </form>
+                </li>
             {% else %}
-                <a class="text-light" href="{% url 'login' %}">Log in</a> |
-                <a class="text-light" href="{% url 'singup' %}">Sing Up</a>
+                <li><a href="{% url 'login' %}" class="hover:text-indigo-400 transition duration-300">ورود</a></li>
+                <li><a href="/accounts/singup/" class="hover:text-indigo-400 transition duration-300">ثبت‌نام</a></li>
             {% endif %}
-        </div>
-    </div>
-</nav>
+        </ul>
+    </nav>
+</header>
 
-<!-- بخش خوش‌آمدگویی با کادر آبی کم‌رنگ -->
-<div class="container">
-    <div class="welcome-box">
-        <h1>Welcome</h1>
-        <p class="lead">به این صفحه وبلاگ خوش آمدید.</p>
-        <p>در این صفحه میتوانید پست‌های خود را منتشر کنید تا کاربران آن را بخوانند و نظرات خود را درباره متن شما ثبت
-            کنند.</p>
-    </div>
-</div>
+<main class="container mx-auto py-8">
+    {% block content %}{% endblock %}
+</main>
 
-<!-- محتوای اصلی -->
-<div class="container">
-    {% block content %}{% endblock content %}
-</div>
+<footer class="bg-gray-800 py-4 mt-8">
+    <div class="container mx-auto text-center">
+        <p>ساخته شده با ❤️ توسط امیررضا نقابی</p>
+    </div>
+</footer>
 </body>
 </html>

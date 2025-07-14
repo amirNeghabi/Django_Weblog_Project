@@ -2,90 +2,99 @@
 {% load crispy_forms_tags %}
 
 {% block page_title %}
-    جزییات
+    {{ post.title }}
 {% endblock page_title %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-9">
-
-            <!-- Post Content -->
-            <div class="card shadow my-3 p-5">
-                <h1>{{ post.title }}</h1>
-                <p class="small text-muted mt-2">نویسنده:{{ post.author }}</p>
-
-
-                <p class="mt-2">{{ post.text }}</p>
-                <div class="mt-3">
-                    {% if post.user == user %}
-                        <a href="{% url 'post_update' post.id %}" class="btn btn-sm btn-info">Edit &rarr;</a>
-                        <a href="{% url 'post_delete' post.id %}" class="btn btn-sm btn-danger">Delete &rarr;</a>
-                    {% endif %}
-
-                </div>
+    <!-- نمایش محتوای پست -->
+    <article class="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
+        <h1 class="text-3xl font-bold text-indigo-400 mb-4">{{ post.title }}</h1>
+        <p class="text-gray-400 mb-4">نویسنده: {{ post.author }}</p>
+        <div class="text-gray-300 prose prose-invert max-w-none">{{ post.text|linebreaks }}</div>
+        {% if post.user == user %}
+            <div class="mt-4 flex space-x-4 space-x-reverse">
+                <a href="/blog/{{ post.id }}/update/" class="text-indigo-400 hover:text-indigo-600 transition duration-300">ویرایش</a>
+                <a href="/blog/{{ post.id }}/delete/" class="text-red-400 hover:text-red-600 transition duration-300">حذف</a>
             </div>
+        {% endif %}
+    </article>
 
-            <!-- Comments Section -->
-            <div class="card shadow my-3 p-4">
-                <h3 class="mb-4">💬 نظرات کاربران</h3>
-
-                    {% for comment in comments %}
-                        {% if comment.is_activate %}
-
-                            <div class="border rounded p-3 mb-3 bg-light">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0 text-primary">
-                                        <i class="bi bi-person-fill"></i> {{ comment.user.username }}
-                                    </h6>
-                                    <small class="text-muted">
-                                        <i class="bi bi-clock-fill"></i>
-                                        {{ comment.datetime_created|date:"F j, Y, g:i a" }}
-                                    </small>
-                                </div>
-                                <p class="mb-1">
-                                    {% if comment.recommend %}
-                                        ✅ خواندن این وبلاگ را توصیه می‌کنم.
-                                    {% else %}
-                                        ❌ خواندن این وبلاگ را توصیه نمی‌کنم.
-                                    {% endif %}
-                                </p>
-                                <p class="text-dark">
-                                    {{ comment.text|linebreaks }}
-                                </p>
-                            </div>
+    <!-- نمایش نظرات -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-indigo-400 mb-4">💬 نظرات کاربران</h2>
+        {% for comment in comments %}
+            {% if comment.is_activate %}
+                <div class="bg-gray-700 p-4 rounded-lg mb-4 shadow-md">
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-gray-300 font-semibold">{{ comment.user.username }}</p>
+                        <p class="text-gray-400 text-sm">{{ comment.datetime_created|date:"Y/n/j - H:i" }}</p>
+                    </div>
+                    <div class="mb-2">
+                        {% if comment.recommend %}
+                            <p class="text-green-400">✅ خواندن این وبلاگ را توصیه می‌کنم.</p>
+                        {% else %}
+                            <p class="text-red-400">❌ خواندن این وبلاگ را توصیه نمی‌کنم.</p>
                         {% endif %}
-                    {% endfor %}
-
-                    {% if not comments|dictsort:"-is_activate"|yesno:"1,0" %}
-                        <div class="alert alert-secondary" role="alert">
-                            No comments yet! Be the first one to leave a comment.
-                        </div>
-                    {% endif %}
-
-            </div>
-
-            <!-- Add New Comment -->
-            <div class="card shadow my-3 p-5">
-                <h3>📝 افزودن نظر جدید</h3>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ comment_form|crispy }}
-                    <button type="submit" class="btn btn-primary mt-3">ثبت نظر</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Sidebar -->
-        <div class="col-3">
-            <div class="card my-4">
-                <h5 class="card-header">About</h5>
-                <div class="card-body">
-                    <p class="card-text">We love Python and Django. So we created a blog site to share our thoughts.</p>
-                    <a href="#" class="btn btn-sm btn-danger">More...</a>
+                    </div>
+                    <p class="text-gray-300">{{ comment.text|linebreaks }}</p>
                 </div>
+            {% endif %}
+        {% empty %}
+            <p class="text-gray-400">هنوز نظری ثبت نشده است! اولین نفر باشید.</p>
+        {% endfor %}
+    </section>
+
+    <!-- فرم ثبت نظر -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-indigo-400 mb-4">📝 افزودن نظر جدید</h2>
+
+        <form method="post" class="bg-gray-800 p-8 rounded-xl shadow-xl max-w-2xl mx-auto border border-gray-700">
+            {% csrf_token %}
+            <div class="space-y-6">
+
+                <!-- فیلد متن -->
+                <div>
+                    <label for="{{ comment_form.text.id_for_label }}"
+                           class="block text-sm font-semibold text-gray-300 mb-1">
+                        متن نظر <span class="text-red-400">*</span>
+                    </label>
+                    <textarea name="{{ comment_form.text.name }}"
+                              id="{{ comment_form.text.id_for_label }}"
+                              rows="6"
+                              class="w-full bg-gray-900 text-white border border-white rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none shadow-inner">
+                        {{ comment_form.text.value|default_if_none:"" }}
+                    </textarea>
+                    {% if comment_form.text.errors %}
+                        <p class="text-red-400 text-sm mt-1">{{ comment_form.text.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- فیلد توصیه -->
+                <div class="flex items-center gap-2">
+                    <input type="checkbox"
+                           name="{{ comment_form.recommend.name }}"
+                           id="{{ comment_form.recommend.id_for_label }}"
+                           {% if comment_form.recommend.value %}checked{% endif %}
+                           class="h-4 w-4 text-indigo-500 bg-gray-900 border border-white rounded focus:ring-indigo-500">
+                    <label for="{{ comment_form.recommend.id_for_label }}"
+                           class="text-gray-300 text-sm font-medium">
+                        توصیه می‌کنم
+                    </label>
+                </div>
+
+                <!-- دکمه ثبت -->
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-300 text-lg">
+                    📩 ثبت نظر
+                </button>
             </div>
-        </div>
-    </div>
-</div>
+        </form>
+    </section>
+
+    <!-- درباره ما -->
+    <section class="mt-12">
+        <h2 class="text-2xl font-bold text-indigo-400 mb-4">درباره ما</h2>
+        <p class="text-gray-300">ما عاشق پایتون و جنگو هستیم. به همین دلیل این سایت وبلاگ را برای به اشتراک گذاشتن افکارمان ایجاد کردیم.</p>
+        <a href="#" class="text-indigo-400 hover:text-indigo-600 mt-2 inline-block transition duration-300">بیشتر...</a>
+    </section>
 {% endblock content %}

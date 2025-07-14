@@ -3,57 +3,43 @@
 
 {% block page_title %}
     اضافه کردن پست جدید
-
 {% endblock page_title %}
 
 {% block content %}
-
-    <div class="container mt-4">
-    <div class="row">
-        <div class="col-9">
-            <div class="card shadow my-3 p-5">
-                <h3>Add new Post:</h3>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-{#                    ----------------------1#}
-
-{#                    {{ form.as_p }}#}
-{#                    -----------2------#}
-{#                    <table>#}
-{#                        {{ form.as_table }}#}
-{#                    </table>#}
-{#                    --------------3------------#}
-{#                        {{ form.as_ul }}#}
-                {#                    متغییر formدر کانتکس رو در صفحه نمایش بده#}
-{#                    <div class="form-group py-2">#}
-{#                        <label class="py-1">Enter post title</label>#}
-{#                        <input type="text" class="form-control" placeholder="e.g. Some Title" name="title">#}
-{#                    </div>#}
-{#                    <div class="form-group py-2">#}
-{#                        <label class="py-1">Enter post text:</label>#}
-{#                        <textarea class="form-control" name="text" rows="8" placeholder="Enter your post text here..."></textarea>#}
-{#                    </div>#}
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>
-        <div class="col-3">
-
-                <div class="card my-4">
-                    <h5 class="card-header">About</h5>
-                    <div class="card-body">
-                        <p class="card-text">We love python and django. So we created a blog site to share our
-                            thoughts</p>
-                        <a href="#"
-                           class="btn btn-sm btn-danger">
-                            More...
-                        </a>
-                    </div>
+    <h1 class="text-3xl font-bold text-indigo-400 mb-8 text-center">اضافه کردن پست جدید</h1>
+    <form method="post" class="bg-gray-800 p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+        {% csrf_token %}
+        <div class="space-y-6">
+            {% for field in form %}
+                <div class="mb-4">
+                    <label for="{{ field.id_for_label }}" class="block text-gray-300 mb-2">{{ field.label }}</label>
+                    <div class="crispy-field">{{ field|as_crispy_field }}</div>
+                    <style>
+                        .crispy-field input, .crispy-field textarea, .crispy-field select {
+                            background-color: #4b5563 !important;
+                            color: #d1d5db !important;
+                            border-color: #4b5563 !important;
+                            border-width: 1px;
+                            border-radius: 0.375rem;
+                        }
+                        .crispy-field input:focus, .crispy-field textarea:focus, .crispy-field select:focus {
+                            outline: none;
+                            border-color: #60a5fa !important;
+                            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.5);
+                        }
+                    </style>
+                    {% if field.errors %}
+                        <p class="text-red-400 text-sm mt-1">{{ field.errors }}</p>
+                    {% endif %}
                 </div>
-
+            {% endfor %}
         </div>
-    </div>
-</div>
+        <button type="submit" class="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition duration-300">ثبت</button>
+    </form>
 
+    <section class="mt-12">
+        <h2 class="text-2xl font-bold text-indigo-400 mb-4">درباره ما</h2>
+        <p class="text-gray-300">ما عاشق پایتون و جنگو هستیم. به همین دلیل این سایت وبلاگ را برای به اشتراک گذاشتن افکارمان ایجاد کردیم.</p>
+        <a href="#" class="text-indigo-400 hover:text-indigo-600 mt-2 inline-block transition duration-300">بیشتر...</a>
+    </section>
 {% endblock content %}
