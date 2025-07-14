@@ -5,7 +5,7 @@ from .models import Post, Comment
 class NewPostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title','text','author','status']
+        fields = ['title','text']
 
 # فرم ارسال نظز برای کاربر
 class CommentForm(forms.ModelForm):

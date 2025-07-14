@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.template.defaulttags import comment
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+
 from .models import Post,Comment
 # مربوط ب راه اول مدیریت خطا
 from django.core.exceptions import ObjectDoesNotExist
@@ -162,18 +163,38 @@ class PostCreateView(LoginRequiredMixin,generic.CreateView):
     form_class = NewPostForm
     template_name = "blog/post_create.html"
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.user = self.request.user
+        form.instance.status = 'drf'
+        return super().form_valid(form)
+
+
+
 # ساخت فرم برای اپدیت پست ها
-class PostUpdateView(LoginRequiredMixin,generic.UpdateView):
+class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,generic.UpdateView):
     # نوع مئل را باید معیین کنیم تا جنگو بهش کوِییری بزند
     model = Post
     form_class = NewPostForm
     template_name = "blog/post_create.html"
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+
 # ساخت کلای برای حذف پست
-class PostDeleteView(LoginRequiredMixin,generic.DeleteView):
+class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,generic.DeleteView):
     model = Post
     template_name = "blog/post_delete.html"
 #     بعد از ساخت کلاس و با کمی تاخیر برو و آدرس صفحه نمایش پست را پیدا کن
 # و کاربر را بعد از حذف پست به اون صفحه ریدایرکت کن
     success_url = reverse_lazy("post_list")
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+
+
 

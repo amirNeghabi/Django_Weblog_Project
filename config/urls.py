@@ -26,4 +26,5 @@ urlpatterns = [
     path("accounts/",include('django.contrib.auth.urls')),
 #     ساخت یو ار ال برای رفتن کاربر به صفحه sing up
     path('accounts/',include('accounts.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]

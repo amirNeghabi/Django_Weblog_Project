@@ -1,0 +1,22 @@
+/* static/admin/css/custom.css */
+
+/* فونت فارسی + انگلیسی */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap');
+
+body, h1, h2, h3, h4, h5, h6, label, th, td, span, a {
+    font-family: 'Vazirmatn', sans-serif !important;
+    direction: rtl;
+    text-align: right;
+}
+
+/* لوگو گرد */
+.img-circle {
+    border-radius: 50%;
+}
+
+/* رفع به‌هم‌ریختگی فرم‌ها */
+.form-row {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
